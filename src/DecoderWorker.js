@@ -1631,8 +1631,8 @@ self.onmessage = function(e) {
 	}
 	var FinalResult = Main();
 	if(FinalResult.length > 0) {
-		postMessage({result: FinalResult, success: true});
+		postMessage({result: FinalResult, success: true, cmd: e.data.cmd});
 	} else {
-		postMessage({result: FinalResult, success: false});
+		postMessage({result: FinalResult, success: false, cmd: e.data.cmd});
 	}
 }

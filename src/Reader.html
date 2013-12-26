@@ -9,8 +9,11 @@
 			<img width="320" height="240" src="about:blank" alt="" id="picture">
 			<input id="Take-Picture" type="file" accept="image/*;capture=camera" />
 			<p id="textbit"></p>
+			<p id="counttime"></p>
 		</div>
 		<script type="text/javascript">
+		    var lStartTime, lEndTime;
+		    var lCountTimeLog = document.getElementById('counttime');
 			var takePicture = document.querySelector("#Take-Picture"),
 			showPicture = document.querySelector("#picture");
 			Result = document.querySelector("#textbit");
@@ -38,6 +41,12 @@
 					if(resultArray.length === 0 && workerCount === 0) {
 						Result.innerHTML="Decoding failed.";
 					}
+				}
+				lEndTime = (new Date()).getTime();
+				if (e.data.success) {
+				    lCountTimeLog.innerHTML += (lEndTime - lStartTime).toString() + '(' + e.data.cmd + ')*<br>';
+				} else {
+				    lCountTimeLog.innerHTML += (lEndTime - lStartTime).toString() + '(' + e.data.cmd + ')<br>';
 				}
 			}
 			var DecodeWorker = new Worker("DecoderWorker.js");
@@ -82,13 +91,18 @@
 					resultArray = [];
 					workerCount = 4;
 					Result.innerHTML="";
+					lStartTime = (new Date()).getTime();
 					DecodeWorker.postMessage({pixels: ctx.getImageData(0,0,Canvas.width,Canvas.height).data, cmd: "normal"});
 					RightWorker.postMessage({pixels: ctx.getImageData(0,0,Canvas.width,Canvas.height).data, cmd: "right"});
 					LeftWorker.postMessage({pixels: ctx.getImageData(0,0,Canvas.width,Canvas.height).data, cmd: "left"});
 					FlipWorker.postMessage({pixels: ctx.getImageData(0,0,Canvas.width,Canvas.height).data, cmd: "flip"});
 				}
 			}
+			
+			setTimeout(function () {
+			    showPicture.src = '../Sample-images/EAN-13/21.jpg';
+			    DecodeBar();
+			}, 500);
 		</script>
 	</body>
 </html>
-					
